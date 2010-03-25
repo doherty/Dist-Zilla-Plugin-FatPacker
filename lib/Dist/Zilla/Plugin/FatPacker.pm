@@ -5,14 +5,55 @@ use warnings;
 package Dist::Zilla::Plugin::FatPacker;
 
 # ABSTRACT: pack your dependencies onto your script file
+use File::Temp 'tempfile';
+use File::Path 'remove_tree';
 use Moose;
 with 'Dist::Zilla::Role::FileMunger';
+has script => (is => 'ro');
+
+sub safe_system {
+    my $cmd = shift;
+    system($cmd) == 0 or die "can't $cmd: $?";
+}
+
+sub safe_remove_tree {
+    my $errors;
+    remove_tree(@_, { error => \$errors });
+    return unless @$errors;
+    for my $diag (@$errors) {
+        my ($file, $message) = %$diag;
+        if ($file eq '') {
+            warn "general error: $message\n";
+        } else {
+            warn "problem unlinking $file: $message\n";
+        }
+    }
+    die "remove_tree had errors, aborting\n";
+}
 
 sub munge_file {
     my ($self, $file) = @_;
+    unless (defined $self->script) {
+        our $did_warn;
+        $did_warn++ || warn "[FatPacker] requires a 'script' configuration\n";
+        return;
+    }
+    return unless $file->name eq $self->script;
     my $content = $file->content;
-    $content =~ s/.*__FATPACK__/`$^X -e 'use App::FatPacker -run_script' file`/e;
-    $file->content($content);
+    my ($fh, $temp_script) = tempfile();
+    warn "temp script [$temp_script]\n";
+    print $fh $content;
+    close $fh or die "can't close temp file $temp_script: $!\n";
+    safe_system("fatpack trace $temp_script");
+    safe_system("fatpack packlists-for `cat fatpacker.trace` >packlists");
+    safe_system("fatpack tree `cat packlists`");
+    my $fatpack = `fatpack file`;
+
+    for ($temp_script, 'fatpacker.trace', 'packlists') {
+        unlink $_ or die "can't unlink $_: $!\n";
+    }
+    safe_remove_tree('fatlib');
+    $file->content($fatpack . $content);
 }
 __PACKAGE__->meta->make_immutable;
 no Moose;
@@ -29,6 +70,7 @@ __END__
 In C<dist.ini>:
 
     [FatPacker]
+    script = bin/my_script
 
 =head1 DESCRIPTION
 
@@ -37,14 +79,10 @@ file.
 
 =function munge_file
 
-Looks for a C<__FATPACK__> marker and replaces the line it occurs in with the
-packed dependencies. A good way of using this is in a comment line:
+When processing the script file indicated by the C<script> configuration parameter,
+it prepends its packed dependencies to the script.
 
-    #!/usr/bin/env perl
-    # __FATPACK__
-    use strict;
-    use warnings;
-    use Foo::Bar;
-    use Hoge::Hoge;
+This process creates temporary files outside the build directory, but if there
+are no errors, they will be removed again.
 
 =cut
