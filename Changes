@@ -1,4 +1,6 @@
 Revision history for Perl extension {{$dist->name}}
 
 {{$NEXT}}
+
+1.100840  2010-03-25 11:48:24 Europe/Vienna
     - original version
