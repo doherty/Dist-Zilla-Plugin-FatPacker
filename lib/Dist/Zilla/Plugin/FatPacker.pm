@@ -85,4 +85,13 @@ it prepends its packed dependencies to the script.
 This process creates temporary files outside the build directory, but if there
 are no errors, they will be removed again.
 
+=function safe_remove_tree
+
+This is a wrapper around C<remove_tree()> from C<File::Path> that adds some
+error checks.
+
+=function safe_system
+
+This is a wrapper around C<system()> that adds some error checks.
+
 =cut
