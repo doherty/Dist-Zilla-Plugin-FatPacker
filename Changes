@@ -1,6 +1,8 @@
 Revision history for Perl extension {{$dist->name}}
 
 {{$NEXT}}
+
+1.100841  2010-03-25 13:14:45 Europe/Vienna
     - now properly calls fatpack trace, packlists-for, tree and file
 
 1.100840  2010-03-25 11:48:24 Europe/Vienna
