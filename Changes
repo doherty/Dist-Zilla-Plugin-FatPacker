@@ -1,6 +1,7 @@
 Revision history for Perl extension {{$dist->name}}
 
 {{$NEXT}}
+    - ucfirst ABSTRACT
 
 1.100841  2010-03-25 13:14:45 Europe/Vienna
     - now properly calls fatpack trace, packlists-for, tree and file

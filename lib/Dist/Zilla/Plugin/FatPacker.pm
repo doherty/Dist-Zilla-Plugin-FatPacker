@@ -4,7 +4,7 @@ use warnings;
 
 package Dist::Zilla::Plugin::FatPacker;
 
-# ABSTRACT: pack your dependencies onto your script file
+# ABSTRACT: Pack your dependencies onto your script file
 use File::Temp 'tempfile';
 use File::Path 'remove_tree';
 use Moose;
