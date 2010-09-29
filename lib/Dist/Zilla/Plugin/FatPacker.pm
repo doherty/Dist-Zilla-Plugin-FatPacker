@@ -59,11 +59,13 @@ __PACKAGE__->meta->make_immutable;
 no Moose;
 1;
 
-=pod
+=begin :prelude
 
 =for test_synopsis
 1;
 __END__
+
+=end :prelude
 
 =head1 SYNOPSIS
 
@@ -77,7 +79,7 @@ In C<dist.ini>:
 This plugin uses L<App::FatPacker> to pack your dependencies onto your script
 file.
 
-=function munge_file
+=method munge_file
 
 When processing the script file indicated by the C<script> configuration parameter,
 it prepends its packed dependencies to the script.
@@ -93,5 +95,3 @@ error checks.
 =function safe_system
 
 This is a wrapper around C<system()> that adds some error checks.
-
-=cut
