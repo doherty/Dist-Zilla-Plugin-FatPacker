@@ -44,16 +44,18 @@ sub munge_file {
     warn "temp script [$temp_script]\n";
     print $fh $content;
     close $fh or die "can't close temp file $temp_script: $!\n";
+    
+    $ENV{PERL5LIB} = join ':', grep defined, 'lib', $ENV{PERL5LIB};
     safe_system("fatpack trace $temp_script");
     safe_system("fatpack packlists-for `cat fatpacker.trace` >packlists");
     safe_system("fatpack tree `cat packlists`");
-    my $fatpack = `fatpack file`;
+    my $fatpack = `fatpack file $temp_script`;
 
     for ($temp_script, 'fatpacker.trace', 'packlists') {
         unlink $_ or die "can't unlink $_: $!\n";
     }
     safe_remove_tree('fatlib');
-    $file->content($fatpack . $content);
+    $file->content($fatpack);
 }
 __PACKAGE__->meta->make_immutable;
 no Moose;
