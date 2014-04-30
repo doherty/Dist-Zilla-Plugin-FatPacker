@@ -1,6 +1,8 @@
 Revision history for Perl extension {{$dist->name}}
 
 {{$NEXT}}
+    - Handle shebang lines correctly
+    - Add tests
     - ucfirst ABSTRACT
     - fixed POD
 
