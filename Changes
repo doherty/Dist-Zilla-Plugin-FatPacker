@@ -1,6 +1,8 @@
 Revision history for Perl extension {{$dist->name}}
 
 {{$NEXT}}
+
+1.141200  2014-04-29 22:14:09-03:00 America/Halifax
     - Handle shebang lines correctly
     - Add tests
     - ucfirst ABSTRACT
