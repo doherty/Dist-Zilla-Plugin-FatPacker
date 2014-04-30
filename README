@@ -1,0 +1,61 @@
+NAME
+    Dist::Zilla::Plugin::FatPacker - Pack your dependencies onto your script
+    file
+
+VERSION
+    version 1.141200
+
+SYNOPSIS
+    In "dist.ini":
+
+        [FatPacker]
+        script = bin/my_script
+
+DESCRIPTION
+    This plugin uses App::FatPacker to pack your dependencies onto your
+    script file.
+
+METHODS
+  munge_file
+    When processing the script file indicated by the "script" configuration
+    parameter, it prepends its packed dependencies to the script.
+
+    This process creates temporary files outside the build directory, but if
+    there are no errors, they will be removed again.
+
+FUNCTIONS
+  safe_remove_tree
+    This is a wrapper around "remove_tree()" from "File::Path" that adds
+    some error checks.
+
+  safe_system
+    This is a wrapper around "system()" that adds some error checks.
+
+INSTALLATION
+    See perlmodinstall for information and options on installing Perl
+    modules.
+
+BUGS AND LIMITATIONS
+    You can make new bug reports, and view existing ones, through the web
+    interface at
+    <http://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-FatP
+    acker>.
+
+AVAILABILITY
+    The project homepage is
+    <http://search.cpan.org/dist/Dist-Zilla-Plugin-FatPacker/>.
+
+    The latest version of this module is available from the Comprehensive
+    Perl Archive Network (CPAN). Visit <http://www.perl.com/CPAN/> to find a
+    CPAN site near you, or see
+    <https://metacpan.org/module/Dist::Zilla::Plugin::FatPacker/>.
+
+AUTHOR
+    Mike Doherty <doherty@cpan.org>
+
+COPYRIGHT AND LICENSE
+    This software is copyright (c) 2010 by Mike Doherty.
+
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
+
