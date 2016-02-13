@@ -7,9 +7,27 @@ package Dist::Zilla::Plugin::FatPacker;
 # ABSTRACT: Pack your dependencies onto your script file
 use File::Temp 'tempfile';
 use File::Path 'remove_tree';
+use File::pushd 'tempd';
+use Path::Class 'file';
 use Moose;
 with 'Dist::Zilla::Role::FileMunger';
 has script => (is => 'ro');
+
+around munge_files => sub {
+    my ($orig, $self, @args) = @_;
+    my $tmpdir = tempd();
+
+    for my $file (@{ $self->zilla->files }) {
+        my $path = file($file->name);
+        $path->dir->mkpath();
+
+        my $fh = $path->open('>:bytes')
+            or die "Can't create $path in fatpacking work dir: $!\n";
+        $fh->print($file->encoded_content);
+    }
+
+    return $self->$orig(@args);
+};
 
 sub safe_system {
     my $cmd = shift;
