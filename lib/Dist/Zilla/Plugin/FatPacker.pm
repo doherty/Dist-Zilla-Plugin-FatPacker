@@ -11,6 +11,17 @@ use Moose;
 with 'Dist::Zilla::Role::FileMunger';
 has script => (is => 'ro');
 
+sub safe_pipe_command {
+    my ($binmode, @cmd) = @_;
+
+    open(my($pipe), '-|', @cmd) or die "can't run command @cmd: $!";
+    binmode($pipe, $binmode);
+    my $output = join('', <$pipe>);
+    close($pipe);
+
+    return $output;
+}
+
 sub safe_system {
     my $cmd = shift;
     system($cmd) == 0 or die "can't $cmd: $?";
@@ -39,8 +50,9 @@ sub munge_file {
         return;
     }
     return unless $file->name eq $self->script;
-    my $content = $file->content;
+    my $content = $file->encoded_content;
     my ($fh, $temp_script) = tempfile();
+    binmode($fh, ':bytes');
     warn "temp script [$temp_script]\n";
     print $fh $content;
     close $fh or die "can't close temp file $temp_script: $!\n";
@@ -49,13 +61,13 @@ sub munge_file {
     safe_system("fatpack trace $temp_script");
     safe_system("fatpack packlists-for `cat fatpacker.trace` >packlists");
     safe_system("fatpack tree `cat packlists`");
-    my $fatpack = `fatpack file $temp_script`;
+    my $fatpack = safe_pipe_command(':bytes', 'fatpack', 'file', $temp_script);
 
     for ($temp_script, 'fatpacker.trace', 'packlists') {
         unlink $_ or die "can't unlink $_: $!\n";
     }
     safe_remove_tree('fatlib');
-    $file->content($fatpack);
+    $file->encoded_content($fatpack);
 }
 __PACKAGE__->meta->make_immutable;
 no Moose;
@@ -88,6 +100,10 @@ it prepends its packed dependencies to the script.
 
 This process creates temporary files outside the build directory, but if there
 are no errors, they will be removed again.
+
+=function safe_pipe_command
+
+This runs a command in a pipe, and returns the stdout.
 
 =function safe_remove_tree
 
