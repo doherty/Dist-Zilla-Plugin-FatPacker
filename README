@@ -3,7 +3,7 @@ NAME
     file
 
 VERSION
-    version 1.141200
+    version 1.161630
 
 SYNOPSIS
     In "dist.ini":
@@ -24,6 +24,9 @@ METHODS
     there are no errors, they will be removed again.
 
 FUNCTIONS
+  safe_pipe_command
+    This runs a command in a pipe, and returns the stdout.
+
   safe_remove_tree
     This is a wrapper around "remove_tree()" from "File::Path" that adds
     some error checks.
