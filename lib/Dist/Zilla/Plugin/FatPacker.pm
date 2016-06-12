@@ -1,10 +1,10 @@
+package Dist::Zilla::Plugin::FatPacker;
 use 5.008;
 use strict;
 use warnings;
-
-package Dist::Zilla::Plugin::FatPacker;
-
 # ABSTRACT: Pack your dependencies onto your script file
+# VERSION
+
 use File::Temp 'tempfile';
 use File::Path 'remove_tree';
 use File::pushd 'tempd';
@@ -93,9 +93,7 @@ no Moose;
 
 =begin :prelude
 
-=for test_synopsis
-1;
-__END__
+=for test_synopsis BEGIN { die "SKIP: synopsis isn't perl code" }
 
 =end :prelude
 
@@ -111,7 +109,7 @@ In C<dist.ini>:
 This plugin uses L<App::FatPacker> to pack your dependencies onto your script
 file.
 
-=method munge_file
+=head2 munge_file
 
 When processing the script file indicated by the C<script> configuration parameter,
 it prepends its packed dependencies to the script.
@@ -119,15 +117,15 @@ it prepends its packed dependencies to the script.
 This process creates temporary files outside the build directory, but if there
 are no errors, they will be removed again.
 
-=function safe_pipe_command
+=head2 safe_pipe_command
 
-This runs a command in a pipe, and returns the stdout.
+Runs a command in a pipe, and returns the stdout.
 
-=function safe_remove_tree
+=head2 safe_remove_tree
 
-This is a wrapper around C<remove_tree()> from C<File::Path> that adds some
+A wrapper around C<remove_tree()> from C<File::Path> that adds some
 error checks.
 
-=function safe_system
+=head2 safe_system
 
-This is a wrapper around C<system()> that adds some error checks.
+A wrapper around C<system()> that adds some error checks.
