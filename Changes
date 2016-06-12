@@ -1,6 +1,8 @@
 Revision history for Perl extension {{$dist->name}}
 
 {{$NEXT}}
+
+1.161631  2016-06-11
   - Re-packaged with [@Author::DOHERTY] (fixes rt-115278)
 
 1.161630  2016-06-11 02:03:48-07:00 America/Los_Angeles
